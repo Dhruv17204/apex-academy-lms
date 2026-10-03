@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LessonResources } from './LessonResources.tsx';
+import { YouTubeLessonPlayer } from './YouTubeLessonPlayer.tsx';
 import { getAuthTokenAsync } from '../../lib/supabaseClient.ts';
-import { 
-  Play, 
-  CheckCircle2, 
-  Clock, 
-  FileText, 
-  Copy, 
+import {
+  Play,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Copy,
   Check,
   Target,
   Lightbulb,
@@ -199,20 +200,48 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
     return `${mins}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  const getYouTubeVideoId = (url: string | undefined | null): string | null => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  // Detect attached primary video across the whole component
+  const attachedVideoResource = resources?.find((r: any) =>
+    r.resource_type === 'VIDEO' ||
+    r.file_url?.toLowerCase().includes('.mp4') ||
+    getYouTubeVideoId(r.file_url) !== null
+  );
+
+  const ytVideoId = getYouTubeVideoId(attachedVideoResource?.file_url) || getYouTubeVideoId(lesson.video_url);
+  const nativeVideoUrl = attachedVideoResource?.file_url || lesson.video_url;
+  const hasRealVideo = !!ytVideoId || (nativeVideoUrl && nativeVideoUrl.trim().length > 0);
+
   // Primary Content Renderer
   const renderPrimaryContent = () => {
-    switch (lesson.lesson_type?.toUpperCase()) {
-      case 'VIDEO': {
-        const watchPercentage = videoDuration > 0 ? Math.min(100, Math.round((videoTime / videoDuration) * 100)) : 0;
-        const hasRealVideo = lesson.video_url && lesson.video_url.trim().length > 0;
+    // 1. If a video is explicitly attached OR it's a VIDEO type lesson, render the video player
+    if (hasRealVideo || lesson.lesson_type?.toUpperCase() === 'VIDEO') {
+      const watchPercentage = videoDuration > 0 ? Math.min(100, Math.round((videoTime / videoDuration) * 100)) : 0;
 
-        return (
-          <div className="aspect-video bg-slate-950 rounded-2xl overflow-hidden relative shadow-lg border border-slate-800 flex flex-col justify-between text-white">
-            {hasRealVideo ? (
-              <div className="relative w-full h-full bg-black flex items-center justify-center">
+      return (
+        <div className="aspect-video bg-slate-950 rounded-2xl overflow-hidden relative shadow-lg border border-slate-800 flex flex-col justify-between text-white">
+          {hasRealVideo ? (
+            <div className="relative w-full h-full bg-black flex items-center justify-center">
+              {ytVideoId ? (
+                <YouTubeLessonPlayer
+                  key={ytVideoId}
+                  videoId={ytVideoId}
+                  lessonTitle={lesson.title}
+                  lastPositionSeconds={progress.last_position_seconds || 0}
+                  isCompleted={progress.status === 'COMPLETED'}
+                  onUpdateProgress={onUpdateProgress}
+                  onCompleteLesson={onCompleteLesson}
+                />
+              ) : (
                 <video
                   ref={videoRef}
-                  src={lesson.video_url}
+                  src={nativeVideoUrl!}
                   controls
                   controlsList="nodownload"
                   className="w-full h-full rounded-2xl object-contain"
@@ -222,176 +251,61 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
                   onPlay={() => setIsVideoPlaying(true)}
                   onPause={() => setIsVideoPlaying(false)}
                 >
-                  {subtitleTrack && (
-                    <track
-                      kind="subtitles"
-                      src={subtitleTrack.file_url}
-                      srcLang="en"
-                      label={subtitleTrack.title || 'English'}
-                      default
-                    />
-                  )}
                   Your browser does not support the video tag.
                 </video>
-              </div>
-            ) : (
-              <div className="p-6 flex flex-col justify-between h-full">
-                <div className="flex items-center justify-between text-xs text-slate-300 z-10">
-                  <span className="px-2.5 py-0.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full font-bold">
-                    VIDEO LESSON
-                  </span>
-                  <span>{formatSeconds(videoTime)} / {formatSeconds(videoDuration)}</span>
-                </div>
-
-                <div className="text-center space-y-3 my-auto z-10 max-w-lg mx-auto">
-                  <button
-                    onClick={() => setIsVideoPlaying(!isVideoPlaying)}
-                    className="w-16 h-16 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center mx-auto shadow-xl transition-all transform hover:scale-105"
-                  >
-                    <Play className={`w-8 h-8 fill-white ${isVideoPlaying ? 'ml-0' : 'ml-1'}`} />
-                  </button>
-                  <p className="text-xs text-slate-300 font-medium">
-                    {isVideoPlaying ? 'Playing lesson video...' : 'Click to play video'}
-                  </p>
-                </div>
-
-                <div className="space-y-2 z-10">
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden cursor-pointer">
-                    <div
-                      className="bg-indigo-500 h-full transition-all duration-200"
-                      style={{ width: `${watchPercentage}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      }
-
-      case 'ARTICLE':
-      case 'READING': {
-        const renderContent = (content: string) => {
-          return content.split('\n\n').map((block, idx) => {
-            const trimmed = block.trim();
-            if (!trimmed) return null;
-
-            // Code block
-            if (trimmed.startsWith('```')) {
-              const codeText = trimmed.replace(/^```[a-z]*\n?/, '').replace(/```$/, '').trim();
-              return (
-                <div key={idx} className="relative bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto my-4">
-                  <button
-                    onClick={() => handleCopyText(codeText)}
-                    className="absolute right-3 top-3 p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
-                  >
-                    {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                  <pre className="m-0 leading-relaxed whitespace-pre-wrap">{codeText}</pre>
-                </div>
-              );
-            }
-
-            // H1 heading
-            if (trimmed.startsWith('# ')) {
-              return <h3 key={idx} className="text-lg font-bold text-slate-900 mt-6 mb-2">{trimmed.slice(2)}</h3>;
-            }
-            // H2 heading
-            if (trimmed.startsWith('## ')) {
-              return <h4 key={idx} className="text-base font-semibold text-slate-800 mt-5 mb-2">{trimmed.slice(3)}</h4>;
-            }
-            // H3 heading
-            if (trimmed.startsWith('### ')) {
-              return <h5 key={idx} className="text-sm font-semibold text-slate-700 mt-4 mb-1.5">{trimmed.slice(4)}</h5>;
-            }
-
-            // Bullet list
-            if (trimmed.split('\n').every(line => line.trim().startsWith('- ') || line.trim().startsWith('* '))) {
-              const items = trimmed.split('\n').filter(l => l.trim());
-              return (
-                <ul key={idx} className="list-disc list-inside space-y-1.5 my-3">
-                  {items.map((item, i) => (
-                    <li key={i} className="text-sm text-slate-700 leading-relaxed pl-1">
-                      {item.replace(/^[-*]\s+/, '')}
-                    </li>
-                  ))}
-                </ul>
-              );
-            }
-
-            // Numbered list
-            if (trimmed.split('\n').some(line => /^\d+\.\s/.test(line.trim()))) {
-              const items = trimmed.split('\n').filter(l => l.trim());
-              return (
-                <ol key={idx} className="list-decimal list-inside space-y-1.5 my-3">
-                  {items.map((item, i) => (
-                    <li key={i} className="text-sm text-slate-700 leading-relaxed pl-1">
-                      {item.replace(/^\d+\.\s+/, '')}
-                    </li>
-                  ))}
-                </ol>
-              );
-            }
-
-            // Regular paragraph
-            return (
-              <p key={idx} className="text-sm text-slate-700 leading-7">
-                {trimmed}
-              </p>
-            );
-          }).filter(Boolean);
-        };
-
-        return (
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-100 shadow-sm space-y-6">
-            <div className="flex items-center gap-2 text-xs font-bold" style={{ color: '#026adb' }}>
-              <FileText className="w-4 h-4" />
-              <span className="uppercase tracking-widest">{lesson.lesson_type} LESSON</span>
+              )}
             </div>
-
-            {lesson.content && lesson.content.trim() ? (
-              lesson.content.trim().startsWith('<') ? (
-                <div 
-                  className="prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed prose-h2:text-xl prose-h2:font-extrabold prose-h2:text-slate-900 prose-h2:mt-7 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-slate-100 prose-h3:text-base prose-h3:font-bold prose-h3:text-slate-900 prose-h3:mt-5 prose-h3:mb-2 prose-p:text-sm prose-p:text-slate-700 prose-p:leading-7 prose-p:mb-4 prose-ul:list-disc prose-ul:pl-5 prose-ul:my-4 prose-ol:list-decimal prose-ol:pl-5 prose-ol:my-4 prose-li:text-sm prose-li:text-slate-700 prose-li:mb-1.5 prose-strong:text-slate-900 prose-code:bg-slate-100 prose-code:text-slate-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs"
-                  dangerouslySetInnerHTML={{ __html: lesson.content }}
-                />
-              ) : (
-                <div className="space-y-4">
-                  {renderContent(lesson.content)}
-                </div>
-              )
-            ) : (
-              <div className="p-10 bg-slate-50/80 border border-slate-200 rounded-2xl text-center space-y-3 max-w-xl mx-auto my-4">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-indigo-600">
-                  <BookOpen className="w-6 h-6" />
-                </div>
-                <h4 className="text-base font-extrabold text-slate-900">Lesson Preparation in Progress</h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  This lesson is currently being prepared. Please continue with the next available lesson.
-                </p>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-slate-400">
+              <div className="w-12 h-12 mb-4 opacity-50 rounded bg-slate-800 flex items-center justify-center">
+                <span className="text-xs font-bold">VIDEO</span>
               </div>
-            )}
-          </div>
-        );
-      }
-
-      case 'PRACTICAL':
-        // Practical lessons are treated as ARTICLE-type reading content
-        return (
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: '#026adb' }}>
-              <FileText className="w-4 h-4" />
-              <span>READING MATERIAL</span>
+              <p>Video content is being prepared.</p>
+              <p className="text-xs mt-2 opacity-70">Check back later or proceed with the reading material.</p>
             </div>
-            <div className="prose prose-slate max-w-none text-sm text-slate-800 leading-relaxed whitespace-pre-line">
-              {lesson.content || 'Content for this lesson will be available soon.'}
-            </div>
-          </div>
-        );
+          )}
 
-      default:
-        return null;
+          {/* Minimal Custom Video Controls (Below the video for native MP4s) */}
+          {hasRealVideo && !ytVideoId && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex items-center gap-4 opacity-0 hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => setIsVideoPlaying(!isVideoPlaying)}
+                className="p-2 hover:bg-white/20 rounded-full transition-colors focus:outline-none"
+              >
+                <span className="text-xs">{isVideoPlaying ? 'Pause' : 'Play'}</span>
+              </button>
+
+              <div className="flex-1 flex items-center gap-3">
+                <span className="text-xs font-medium font-mono">
+                  {Math.floor(videoTime / 60)}:{Math.floor(videoTime % 60).toString().padStart(2, '0')}
+                </span>
+                <div className="h-1.5 flex-1 bg-white/20 rounded-full overflow-hidden cursor-pointer">
+                  <div
+                    className="h-full bg-indigo-500 rounded-full"
+                    style={{ width: `${watchPercentage}%` }}
+                  />
+                </div>
+                <span className="text-xs font-medium font-mono opacity-70">
+                  {Math.floor(videoDuration / 60)}:{Math.floor(videoDuration % 60).toString().padStart(2, '0')}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
     }
+
+    // 2. Fallback for ARTICLE or PRACTICAL when no video is attached
+    return (
+      <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 space-y-4">
+        <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: '#026adb' }}>
+          <span className="uppercase tracking-widest">{lesson.lesson_type} MATERIAL</span>
+        </div>
+        <div className="prose prose-slate max-w-none text-sm text-slate-800 leading-relaxed whitespace-pre-line">
+          {lesson.content || 'Content for this lesson will be available soon.'}
+        </div>
+      </div>
+    );
   };
 
   const hasObjectives = Array.isArray(lesson.learning_objectives) && lesson.learning_objectives.length > 0;
@@ -400,7 +314,7 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto" style={{ fontFamily: 'Poppins, sans-serif' }}>
-      
+
       {/* ── LESSON HEADER (GL-style: title + status + Complete CTA in same row) ── */}
       <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-200">
         <div className="flex-1 min-w-0 space-y-1.5">
@@ -533,9 +447,8 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
                   disabled={Boolean(submissionResult)}
                   className={`w-full text-left p-3.5 rounded-xl border text-xs transition-all flex items-center gap-3 ${optionClass}`}
                 >
-                  <span className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
-                    isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300'
-                  }`}>
+                  <span className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300'
+                    }`}>
                     {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white"></span>}
                   </span>
                   <span>{opt.option_text}</span>
@@ -557,9 +470,8 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
               </button>
             </div>
           ) : (
-            <div className={`p-4 rounded-xl text-xs space-y-2 border ${
-              submissionResult.is_correct ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-amber-50 border-amber-200 text-amber-950'
-            }`}>
+            <div className={`p-4 rounded-xl text-xs space-y-2 border ${submissionResult.is_correct ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-amber-50 border-amber-200 text-amber-950'
+              }`}>
               <div className="font-extrabold flex items-center justify-between">
                 <span>{submissionResult.is_correct ? 'CORRECT ✓' : 'NOT QUITE'}</span>
                 <button
@@ -577,7 +489,7 @@ export const LessonRenderer: React.FC<LessonRendererProps> = ({
       )}
 
       {/* SUPPORTING RESOURCES */}
-      <LessonResources resources={resources} />
+      <LessonResources resources={resources?.filter((r: any) => r.id !== attachedVideoResource?.id) || []} />
 
       {/* BOTTOM COMPLETION ROW (GL-style: bottom CTA + next navigation hint) */}
       <div className="pt-5 border-t border-slate-200 flex items-center justify-between gap-4">

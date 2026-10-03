@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  CheckCircle2, 
-  Circle, 
-  PlayCircle, 
-  ChevronDown, 
-  ChevronUp, 
-  FileText, 
-  Code2, 
+import {
+  CheckCircle2,
+  Circle,
+  PlayCircle,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Code2,
   BookMarked,
   Award,
   Lock
@@ -99,7 +99,7 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
 
   return (
     <div className="w-full h-full bg-white border-r border-slate-200 flex flex-col overflow-hidden">
-      
+
       {/* Sidebar Top Title */}
       <div className="p-4 border-b border-slate-100 bg-white">
         <div className="flex items-center justify-between mb-3">
@@ -109,7 +109,7 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
               {modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0)} lessons • {modules.length} modules
             </p>
           </div>
-          <span 
+          <span
             className="px-2.5 py-1 text-white font-bold text-[10px] rounded-full"
             style={{ background: '#026adb' }}
           >
@@ -117,12 +117,12 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
           </span>
         </div>
         {/* Progress Bar */}
-          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-1 shadow-inner">
-            <div
-              className="h-full rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${overallProgressPercentage}%`, background: 'linear-gradient(90deg, #026adb, #4f9ef5)' }}
-            />
-          </div>
+        <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-1 shadow-inner">
+          <div
+            className="h-full rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${overallProgressPercentage}%`, background: 'linear-gradient(90deg, #026adb, #4f9ef5)' }}
+          />
+        </div>
       </div>
 
       {/* Modules List (Paginated up to 3 modules per page) */}
@@ -181,11 +181,10 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
                       <button
                         key={lesson.id}
                         onClick={() => onSelectLesson(lesson.id)}
-                        className={`w-full py-2.5 px-3 text-left flex items-start gap-2.5 transition-all border-l-[3px] ${
-                          isCurrent
+                        className={`w-full py-2.5 px-3 text-left flex items-start gap-2.5 transition-all border-l-[3px] ${isCurrent
                             ? 'border-blue-600 bg-blue-50 text-blue-900'
                             : 'border-transparent hover:bg-slate-50 text-slate-700 hover:border-slate-200'
-                        }`}
+                          }`}
                         style={isCurrent ? { borderLeftColor: '#026adb', backgroundColor: '#e8f0fc' } : {}}
                       >
                         {/* Status Icon */}
@@ -203,9 +202,8 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
 
                         {/* Title & Metadata */}
                         <div className="flex-1 min-w-0 space-y-0.5">
-                          <span className={`text-xs leading-tight block ${
-                            isCurrent ? 'font-semibold' : isCompleted ? 'text-slate-600' : 'text-slate-800'
-                          }`}>
+                          <span className={`text-xs leading-tight block ${isCurrent ? 'font-semibold' : isCompleted ? 'text-slate-600' : 'text-slate-800'
+                            }`}>
                             {lesson.title}
                           </span>
 
@@ -232,13 +230,12 @@ export const CurriculumSidebar: React.FC<CurriculumSidebarProps> = ({
                         <button
                           onClick={() => isUnlocked && onOpenModuleAssessment(mod.id, mod.title)}
                           disabled={!isUnlocked && !mod.assessmentPassed}
-                          className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between ${
-                            mod.assessmentPassed
+                          className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-between ${mod.assessmentPassed
                               ? 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100/70'
                               : isUnlocked
-                              ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xs cursor-pointer'
-                              : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
-                          }`}
+                                ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xs cursor-pointer'
+                                : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
+                            }`}
                         >
                           <div className="flex items-center gap-2">
                             {mod.assessmentPassed ? (

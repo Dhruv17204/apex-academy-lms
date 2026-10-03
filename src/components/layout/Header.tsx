@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  GraduationCap, 
-  ChevronDown, 
-  Search, 
-  Menu, 
-  X, 
-  User, 
-  Shield, 
-  BookOpen, 
+import {
+  GraduationCap,
+  ChevronDown,
+  Search,
+  Menu,
+  X,
+  User,
+  Shield,
+  BookOpen,
   Sparkles,
   Building2,
   Trophy,
@@ -40,11 +40,11 @@ export const Header: React.FC = () => {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Logo & MegaMenu Trigger */}
           <div className="flex items-center gap-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div 
+            <Link to="/" className="relative flex items-center gap-2.5 group">
+              <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform"
                 style={{ background: 'linear-gradient(135deg, #026adb 0%, #0041b2 100%)', boxShadow: '0 4px 12px rgba(2, 106, 219, 0.2)' }}
               >
@@ -57,6 +57,12 @@ export const Header: React.FC = () => {
                 <span className="block text-[10px] font-semibold tracking-wider text-slate-400 uppercase -mt-1">
                   Learning & Certification
                 </span>
+              </div>
+              
+              {/* Custom Hover Tooltip */}
+              <div className="absolute top-full left-4 mt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 bg-slate-800 text-white text-[11px] font-medium py-1.5 px-3 rounded shadow-lg whitespace-nowrap translate-y-1 group-hover:translate-y-0">
+                Return to Home
+                <div className="absolute -top-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
               </div>
             </Link>
 
@@ -75,36 +81,36 @@ export const Header: React.FC = () => {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-5 text-xs font-semibold text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            <Link 
-              to="/programs" 
+            <Link
+              to="/programs"
               className="transition-colors py-1 hover:text-blue-600"
               style={isCurrent('/programs') ? { color: '#026adb', fontWeight: 'bold' } : {}}
             >
               All Programs
             </Link>
-            <Link 
-              to="/free-courses" 
+            <Link
+              to="/free-courses"
               className="transition-colors py-1 hover:text-blue-600"
               style={isCurrent('/free-courses') ? { color: '#026adb', fontWeight: 'bold' } : {}}
             >
               Free Courses
             </Link>
-            <Link 
-              to="/career-support" 
+            <Link
+              to="/career-support"
               className="transition-colors py-1 hover:text-blue-600"
               style={isCurrent('/career-support') ? { color: '#026adb', fontWeight: 'bold' } : {}}
             >
               Career Support
             </Link>
-            <Link 
-              to="/success-stories" 
+            <Link
+              to="/success-stories"
               className="transition-colors py-1 hover:text-blue-600"
               style={isCurrent('/success-stories') ? { color: '#026adb', fontWeight: 'bold' } : {}}
             >
               Success Stories
             </Link>
-            <Link 
-              to="/enterprise" 
+            <Link
+              to="/enterprise"
               className="transition-colors py-1 hover:text-blue-600"
               style={isCurrent('/enterprise') ? { color: '#026adb', fontWeight: 'bold' } : {}}
             >
@@ -115,7 +121,7 @@ export const Header: React.FC = () => {
           {/* Auth & Application Actions (GL Style Profile Avatar Dropdown) */}
           <div className="hidden sm:flex items-center gap-4 relative" style={{ fontFamily: 'Poppins, sans-serif' }}>
             {isAuthenticated ? (
-              <div 
+              <div
                 className="relative"
                 onMouseEnter={() => setIsUserDropdownOpen(true)}
                 onMouseLeave={() => setIsUserDropdownOpen(false)}
@@ -133,9 +139,9 @@ export const Header: React.FC = () => {
                       <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Signed in as</p>
                       <p className="text-xs font-bold text-slate-800 truncate mt-0.5">{profile?.full_name || user?.email || 'Student'}</p>
                     </div>
-                    
-                    <Link 
-                      to="/student/dashboard" 
+
+                    <Link
+                      to="/student/dashboard"
                       onClick={() => setIsUserDropdownOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
                     >
@@ -144,8 +150,8 @@ export const Header: React.FC = () => {
                     </Link>
 
                     {role === 'ADMIN' && (
-                      <Link 
-                        to="/admin/dashboard" 
+                      <Link
+                        to="/admin/dashboard"
                         onClick={() => setIsUserDropdownOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-amber-700 hover:bg-slate-50 transition-colors"
                       >
@@ -175,9 +181,9 @@ export const Header: React.FC = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button 
-                    variant="primary" 
-                    size="sm" 
+                  <Button
+                    variant="primary"
+                    size="sm"
                     className="text-xs font-bold shadow-sm text-white hover:opacity-90 px-4 py-1.5 border-none"
                     style={{ backgroundColor: '#026adb' }}
                   >
@@ -228,8 +234,8 @@ export const Header: React.FC = () => {
           </form>
 
           <nav className="flex flex-col gap-2 font-medium text-sm text-slate-800">
-            <Link 
-              to="/programs" 
+            <Link
+              to="/programs"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-slate-100 flex items-center justify-between"
             >
@@ -239,8 +245,8 @@ export const Header: React.FC = () => {
               </div>
             </Link>
 
-            <Link 
-              to="/free-courses" 
+            <Link
+              to="/free-courses"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-slate-100 flex items-center gap-2"
             >
@@ -248,8 +254,8 @@ export const Header: React.FC = () => {
               <span>Free Courses</span>
             </Link>
 
-            <Link 
-              to="/career-support" 
+            <Link
+              to="/career-support"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-slate-100 flex items-center gap-2"
             >
@@ -257,8 +263,8 @@ export const Header: React.FC = () => {
               <span>Career Support</span>
             </Link>
 
-            <Link 
-              to="/success-stories" 
+            <Link
+              to="/success-stories"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-slate-100 flex items-center gap-2"
             >
@@ -266,8 +272,8 @@ export const Header: React.FC = () => {
               <span>Success Stories</span>
             </Link>
 
-            <Link 
-              to="/enterprise" 
+            <Link
+              to="/enterprise"
               onClick={() => setIsMobileMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-slate-100 flex items-center gap-2"
             >
@@ -279,8 +285,8 @@ export const Header: React.FC = () => {
               {isAuthenticated ? (
                 <>
                   <Link to="/student/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       className="w-full flex items-center justify-center gap-2 text-white border-none"
                       style={{ backgroundColor: '#026adb' }}
                     >
@@ -314,8 +320,8 @@ export const Header: React.FC = () => {
                     <Button variant="outline" className="w-full">Sign In</Button>
                   </Link>
                   <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       className="w-full text-white border-none"
                       style={{ backgroundColor: '#026adb' }}
                     >

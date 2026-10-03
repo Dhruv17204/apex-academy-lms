@@ -70,7 +70,7 @@ export async function fetchCourses(filters?: {
 
     const queryString = params.toString();
     const url = `${API_BASE_URL}/courses${queryString ? `?${queryString}` : ''}`;
-    
+
     const res = await fetch(url);
     return await res.json();
   } catch (err: any) {
@@ -383,8 +383,8 @@ export async function initContentUpload(token: string, data: {
 }
 
 export function uploadFileToSignedUrl(
-  signedUrl: string, 
-  file: File, 
+  signedUrl: string,
+  file: File,
   onProgress?: (progressPercent: number) => void
 ): Promise<{ success: boolean; error?: string }> {
   return new Promise((resolve) => {

@@ -1,20 +1,26 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Apex Academy LMS
 
-# Run and deploy your AI Studio app
+Apex Academy LMS is a modern, full-stack Learning Management System designed to bridge the gap between content creators and learners. It features distinct interfaces for public visitors, enrolled students, and platform administrators.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/adfa6f66-5134-4c54-83b5-abb195086f69
+- **Role-Based Architecture:** Securely isolated environments for Public, Student, and Admin.
+- **Advanced Learning Interface:** Custom-built course player supporting dynamic content types (YouTube, PDF).
+- **Assessment & Certification Engine:** Built-in module/final assessments and dynamic certificate generation.
+- **AI Integration:** Leverage Google GenAI for enhanced learning.
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Framer Motion
+- **Backend:** Express.js, PostgreSQL
+- **Auth & Database:** Supabase
 
+## Setup Instructions
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. **Clone the repository**
+2. **Install dependencies:** `npm install` or `bun install`
+3. **Environment Variables:** Copy `.env.example` to `.env` and fill in your Supabase and Gemini API credentials.
+4. **Run the development server:** `npm run dev`
+
+## License
+MIT

@@ -238,32 +238,29 @@ export const LessonAssetManager: React.FC<LessonAssetManagerProps> = ({
         <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
           <button
             onClick={() => setActiveTab('inventory')}
-            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
-              activeTab === 'inventory'
-                ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${activeTab === 'inventory'
+              ? 'bg-amber-500 text-slate-950 shadow-2xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             Inventory
           </button>
           <button
             onClick={() => setActiveTab('upload')}
-            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
-              activeTab === 'upload'
-                ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${activeTab === 'upload'
+              ? 'bg-amber-500 text-slate-950 shadow-2xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <UploadCloud className="w-3 h-3" />
             <span>Direct Upload</span>
           </button>
           <button
             onClick={() => setActiveTab('attach')}
-            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
-              activeTab === 'attach'
-                ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${activeTab === 'attach'
+              ? 'bg-amber-500 text-slate-950 shadow-2xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <LinkIcon className="w-3 h-3" />
             <span>Attach Link</span>
@@ -369,11 +366,10 @@ export const LessonAssetManager: React.FC<LessonAssetManagerProps> = ({
 
           {/* Upload Status & Progress */}
           {statusMessage && (
-            <div className={`p-3 rounded-xl border text-xs font-bold ${
-              statusMessage.isError
-                ? 'bg-red-50 border-red-200 text-red-700'
-                : 'bg-indigo-50 border-indigo-200 text-indigo-800'
-            }`}>
+            <div className={`p-3 rounded-xl border text-xs font-bold ${statusMessage.isError
+              ? 'bg-red-50 border-red-200 text-red-700'
+              : 'bg-indigo-50 border-indigo-200 text-indigo-800'
+              }`}>
               {statusMessage.text}
             </div>
           )}

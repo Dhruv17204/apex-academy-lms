@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const DEFAULT_SUPABASE_URL = 'https://zbbxnfovtxcbzgykipev.supabase.co';
-const DEFAULT_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpiYnhuZm92dHhjYnpneWtpcGV2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTgxODYyMywiZXhwIjoyMTAxMzk0NjIzfQ.Pq2LLdBdpbWfmW0TBcgPQRH0jrebA1IDwwz7YrdA0Os';
+const DEFAULT_SUPABASE_URL = '';
+const DEFAULT_SERVICE_ROLE_KEY = '';
 
 const isValidHttpUrl = (urlStr?: string): boolean => {
   if (!urlStr || typeof urlStr !== 'string') return false;

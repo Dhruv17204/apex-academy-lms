@@ -36,7 +36,7 @@ const ALLOWED_MIME_TYPES: Record<string, string[]> = {
 export async function resolveSignedAssetUrl(urlOrPath?: string | null, expiresInSeconds = 3600): Promise<string | null> {
   if (!urlOrPath) return null;
   const trimmed = urlOrPath.trim();
-  
+
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return trimmed;
   }

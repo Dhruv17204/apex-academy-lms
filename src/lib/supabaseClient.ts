@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 const rawUrl = import.meta.env.VITE_SUPABASE_URL;
 const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const DEFAULT_SUPABASE_URL = 'https://zbbxnfovtxcbzgykipev.supabase.co';
-const DEFAULT_ANON_KEY = 'sb_publishable_lQxL9ucwfioFTn3-2Y1iOQ_FsEiBA27';
+const DEFAULT_SUPABASE_URL = '';
+const DEFAULT_ANON_KEY = '';
 
 const isValidHttpUrl = (urlStr?: string): boolean => {
   if (!urlStr || typeof urlStr !== 'string') return false;

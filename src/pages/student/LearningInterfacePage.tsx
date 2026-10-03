@@ -8,20 +8,20 @@ import { CurriculumSidebar } from '../../components/learning/CurriculumSidebar.t
 import { LessonRenderer } from '../../components/learning/LessonRenderer.tsx';
 import { ModuleAssessmentModal } from '../../components/learning/ModuleAssessmentModal.tsx';
 import { FinalAssessmentModal } from '../../components/learning/FinalAssessmentModal.tsx';
-import { 
-  fetchCourseLearningOverview, 
-  fetchLessonContent, 
-  updateLessonProgress, 
+import {
+  fetchCourseLearningOverview,
+  fetchLessonContent,
+  updateLessonProgress,
   completeLesson,
   enrollInCourse
 } from '../../services/api.ts';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  CheckCircle2, 
-  Award, 
-  Lock, 
-  Sparkles, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  Award,
+  Lock,
+  Sparkles,
   BookOpen,
   ArrowRight,
   X,
@@ -281,7 +281,7 @@ export const LearningInterfacePage: React.FC = () => {
 
   return (
     <div className="h-screen bg-slate-50 flex flex-col overflow-hidden" style={{ fontFamily: 'Poppins, sans-serif' }}>
-      
+
       {/* 1. Sticky Header */}
       <CoursePlayerHeader
         courseTitle={courseTitle}
@@ -310,7 +310,7 @@ export const LearningInterfacePage: React.FC = () => {
 
       {/* 3. Main Player & Curriculum Layout */}
       <div className="flex-1 max-w-7xl w-full mx-auto flex overflow-hidden">
-        
+
         {/* Desktop Sidebar (Persistent) */}
         <aside className="hidden lg:block w-80 shrink-0 border-r border-slate-200">
           <CurriculumSidebar
@@ -328,14 +328,14 @@ export const LearningInterfacePage: React.FC = () => {
         {/* Mobile Sidebar (Drawer / Sheet) */}
         {mobileSidebarOpen && (
           <div className="fixed inset-0 z-50 lg:hidden flex">
-            <div 
-              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" 
-              onClick={() => setMobileSidebarOpen(false)} 
+            <div
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+              onClick={() => setMobileSidebarOpen(false)}
             />
             <div className="relative w-80 max-w-full bg-white h-full flex flex-col z-10">
               <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
                 <span className="font-bold text-xs">Curriculum Navigation</span>
-                <button 
+                <button
                   onClick={() => setMobileSidebarOpen(false)}
                   className="p-1 hover:bg-slate-800 rounded-lg text-slate-300"
                 >
@@ -360,7 +360,7 @@ export const LearningInterfacePage: React.FC = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 bg-white p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col justify-between relative">
-          
+
           {loadingLesson ? (
             <div className="flex-1 flex items-center justify-center py-20">
               <div className="text-center space-y-3">

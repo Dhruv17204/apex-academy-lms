@@ -6,12 +6,12 @@ import { Card } from '../../components/common/Card.tsx';
 import { Badge } from '../../components/common/Badge.tsx';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner.tsx';
 import { fetchCourses, fetchCategories } from '../../services/api.ts';
-import { 
-  BookOpen, 
-  Clock, 
-  Award, 
-  Search, 
-  Sparkles, 
+import {
+  BookOpen,
+  Clock,
+  Award,
+  Search,
+  Sparkles,
   ArrowRight,
   Filter,
   CheckCircle2
@@ -193,8 +193,10 @@ export const FreeCoursesPage: React.FC = () => {
                     <span>Certificate Included</span>
                   </span>
                   <Link to={`/courses/${course.slug}`}>
-                    <Button variant="primary" size="sm" className="font-bold">
-                      View Details <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    <Button variant="primary" size="sm" className="font-bold whitespace-nowrap">
+                      <span className="flex items-center justify-center">
+                        View Details <ArrowRight className="w-3.5 h-3.5 ml-1 shrink-0" />
+                      </span>
                     </Button>
                   </Link>
                 </div>
